@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>模擬情境問卷調查</title>
+  <title>問卷前導頁</title>
   <style>
     body {
       font-family: 'Noto Serif TC', serif;
@@ -18,12 +18,9 @@
       margin-bottom: 1rem;
     }
 
-    iframe {
-      width: 100%;
-      max-width: 560px;
-      height: 315px;
-      margin: 1rem auto;
-      border: none;
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.7;
     }
 
     button {
@@ -35,25 +32,50 @@
       border-radius: 6px;
       cursor: pointer;
       margin-top: 2rem;
-      display: none; /* 初始隱藏按鈕 */
     }
 
     button:hover {
       background-color: #555;
     }
+
+    #video-container iframe {
+      width: 100%;
+      max-width: 560px;
+      height: 315px;
+      margin: 1rem auto;
+      border: none;
+    }
+
+    #video-section {
+      display: none;
+    }
+
+    #nextButton {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <h1>模擬情境影片觀看</h1>
-  <p>請先觀看以下影片，影片播放30秒後將顯示「前往問卷」按鈕。</p>
-
-  <div id="video-container">
-    <!-- 隨機嵌入 YouTube 影片 -->
-    <div id="player"></div>
+  <!-- 前導靜態頁面 -->
+  <div id="intro-section">
+    <h1>問卷提醒與感謝</h1>
+    <p>親愛的參與者您好：</p>
+    <p>感謝您願意參與本研究。您將會觀看一段模擬影片，影片播放約為 30 秒～1 分鐘。請務必專心觀看，並於影片播放一段時間後點選「前往問卷」進行填答。</p>
+    <p>本研究資料僅供學術用途，您的回答將完全匿名且保密。</p>
+    <p>非常感謝您的時間與協助，祝您平安順心！</p>
+    <button onclick="goToVideo()">下一頁</button>
   </div>
 
-  <button id="nextButton" onclick="goToSurvey()">前往問卷</button>
+  <!-- 影片區塊 -->
+  <div id="video-section">
+    <h1>請觀看以下影片</h1>
+    <p>觀看影片後，將會出現「前往問卷」按鈕。</p>
+    <div id="video-container">
+      <div id="player"></div>
+    </div>
+    <button id="nextButton" onclick="goToSurvey()">前往問卷</button>
+  </div>
 
   <script>
     const youtubeVideos = [
@@ -63,22 +85,27 @@
       "5nAKjG8FR2M"
     ];
     const surveyLink = "https://www.surveycake.com/s/QMg9R";
-    const delaySeconds = 30; // 設定延遲秒數（例如30秒後出現按鈕）
+    const delaySeconds = 30;
 
     let player;
     let buttonShown = false;
+
+    function goToVideo() {
+      document.getElementById('intro-section').style.display = 'none';
+      document.getElementById('video-section').style.display = 'block';
+      embedRandomVideo();
+    }
 
     function embedRandomVideo() {
       const randomIndex = Math.floor(Math.random() * youtubeVideos.length);
       const videoId = youtubeVideos[randomIndex];
 
-      // YouTube IFrame Player API 初始化
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      window.onYouTubeIframeAPIReady = function() {
+      window.onYouTubeIframeAPIReady = function () {
         player = new YT.Player('player', {
           height: '315',
           width: '560',
@@ -102,8 +129,6 @@
     function goToSurvey() {
       window.location.href = surveyLink;
     }
-
-    embedRandomVideo();
   </script>
 </body>
 </html>
