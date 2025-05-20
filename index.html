@@ -57,7 +57,7 @@
 </head>
 <body>
 
-  <!-- 前導靜態頁面 -->
+  <!-- 前導頁 -->
   <div id="intro-section">
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
@@ -67,10 +67,10 @@
     <button onclick="goToVideo()">下一頁</button>
   </div>
 
-  <!-- 影片區塊 -->
+  <!-- 影片區 -->
   <div id="video-section">
     <h1>請觀看以下影片</h1>
-    <p>影片播放完畢後，將會出現「前往問卷」按鈕，請記下您所觀看的對話情境(ex.對話情境三)。</p>
+    <p>影片播放完畢後，將會出現「前往問卷」按鈕。</p>
     <div id="video-container">
       <div id="player"></div>
     </div>
@@ -84,9 +84,8 @@
       "kRHUgpc9JNI",
       "5nAKjG8FR2M"
     ];
-    const surveyLink = "https://www.surveycake.com/s/QMg9R";
-
-    let player;
+    const baseSurveyLink = "https://www.surveycake.com/s/QMg9R";
+    let currentVideoId = "";
 
     function goToVideo() {
       document.getElementById('intro-section').style.display = 'none';
@@ -96,7 +95,7 @@
 
     function embedRandomVideo() {
       const randomIndex = Math.floor(Math.random() * youtubeVideos.length);
-      const videoId = youtubeVideos[randomIndex];
+      currentVideoId = youtubeVideos[randomIndex];
 
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -107,7 +106,7 @@
         player = new YT.Player('player', {
           height: '315',
           width: '560',
-          videoId: videoId,
+          videoId: currentVideoId,
           events: {
             'onStateChange': onPlayerStateChange
           }
@@ -116,15 +115,18 @@
     }
 
     function onPlayerStateChange(event) {
-      // 影片播放結束才顯示按鈕
+      // 僅當影片播放完畢才顯示按鈕
       if (event.data === YT.PlayerState.ENDED) {
         document.getElementById('nextButton').style.display = 'inline-block';
       }
     }
 
     function goToSurvey() {
-      window.location.href = surveyLink;
+      // 問卷網址加上影片參數
+      const surveyURL = `${baseSurveyLink}?video=${currentVideoId}`;
+      window.location.href = surveyURL;
     }
   </script>
 </body>
 </html>
+
