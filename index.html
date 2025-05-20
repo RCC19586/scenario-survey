@@ -61,7 +61,7 @@
   <div id="intro-section">
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
-    <p>感謝您願意參與本研究。您將會觀看一段模擬影片，影片播放約為 30 秒～1 分鐘。請務必專心觀看，並於影片播放一段時間後點選「前往問卷」進行填答。</p>
+    <p>感謝您願意參與本研究。您將會觀看一段模擬影片，影片播放約為 1 ～ 2 分鐘。請務必專心觀看，並於影片結束後點選「前往問卷」進行填答。</p>
     <p>本研究資料僅供學術用途，您的回答將完全匿名且保密。</p>
     <p>非常感謝您的時間與協助，祝您平安順心！</p>
     <button onclick="goToVideo()">下一頁</button>
@@ -70,7 +70,7 @@
   <!-- 影片區塊 -->
   <div id="video-section">
     <h1>請觀看以下影片</h1>
-    <p>觀看影片後，將會出現「前往問卷」按鈕。</p>
+    <p>影片播放完畢後，將會出現「前往問卷」按鈕，請記下您所觀看的對話情境(ex.對話情境三)。</p>
     <div id="video-container">
       <div id="player"></div>
     </div>
@@ -85,10 +85,8 @@
       "5nAKjG8FR2M"
     ];
     const surveyLink = "https://www.surveycake.com/s/QMg9R";
-    const delaySeconds = 30;
 
     let player;
-    let buttonShown = false;
 
     function goToVideo() {
       document.getElementById('intro-section').style.display = 'none';
@@ -118,11 +116,9 @@
     }
 
     function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING && !buttonShown) {
-        buttonShown = true;
-        setTimeout(() => {
-          document.getElementById('nextButton').style.display = 'inline-block';
-        }, delaySeconds * 1000);
+      // 影片播放結束才顯示按鈕
+      if (event.data === YT.PlayerState.ENDED) {
+        document.getElementById('nextButton').style.display = 'inline-block';
       }
     }
 
