@@ -46,6 +46,12 @@
     #nextButton {
       display: none;
     }
+    #situation-label {
+      font-weight: bold;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #006600;
+    }
   </style>
 </head>
 <body>
@@ -54,6 +60,7 @@
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
     <p>感謝您願意參與本研究。您將會觀看一段模擬影片，影片播放約為 1～2 分鐘。請務必專心觀看，並於影片結束後點選「前往問卷」進行填答。</p>
+    <p>請注意：**請根據畫面顯示的「情境名稱」於問卷中自行選擇您所觀看的影片**。</p>
     <p>本研究資料僅供學術用途，您的回答將完全匿名且保密。</p>
     <p>非常感謝您的時間與協助，祝您平安順心！</p>
     <button onclick="goToVideo()">下一頁</button>
@@ -62,6 +69,7 @@
   <div id="video-section">
     <h1>請觀看以下影片</h1>
     <p>影片播放完畢後，將會出現「前往問卷」按鈕。</p>
+    <div id="situation-label"></div>
     <div id="video-container">
       <div id="player"></div>
     </div>
@@ -97,6 +105,10 @@
     function embedRandomVideo() {
       const randomIndex = Math.floor(Math.random() * youtubeVideos.length);
       currentVideoId = youtubeVideos[randomIndex];
+      const situation = videoMapping[currentVideoId];
+
+      // 顯示情境名稱
+      document.getElementById('situation-label').innerText = `您目前觀看的情境為：${situation}`;
 
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -122,8 +134,8 @@
     }
 
     function goToSurvey() {
-      const videoLabel = encodeURIComponent(videoMapping[currentVideoId] || currentVideoId);
-      const surveyURL = `${baseSurveyLink}?prefill_影片編號=${videoLabel}`;
+      const situation = encodeURIComponent(videoMapping[currentVideoId] || currentVideoId);
+      const surveyURL = `${baseSurveyLink}?video=${situation}`;
       window.location.href = surveyURL;
     }
   </script>
