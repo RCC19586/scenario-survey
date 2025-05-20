@@ -11,19 +11,15 @@
       padding: 2rem;
       text-align: center;
       color: #333;
-      position: relative;
     }
-
     h1 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-
     p {
       margin-bottom: 1rem;
       line-height: 1.7;
     }
-
     button {
       padding: 0.8rem 1.5rem;
       font-size: 1rem;
@@ -34,11 +30,9 @@
       cursor: pointer;
       margin-top: 2rem;
     }
-
     button:hover {
       background-color: #555;
     }
-
     #video-container iframe {
       width: 100%;
       max-width: 560px;
@@ -46,27 +40,16 @@
       margin: 1rem auto;
       border: none;
     }
-
     #video-section {
       display: none;
     }
-
     #nextButton {
       display: none;
-    }
-
-    #debug-info {
-      position: fixed;
-      right: 10px;
-      bottom: 10px;
-      font-size: 0.9rem;
-      color: #999;
     }
   </style>
 </head>
 <body>
 
-  <!-- 前導頁 -->
   <div id="intro-section">
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
@@ -76,7 +59,6 @@
     <button onclick="goToVideo()">下一頁</button>
   </div>
 
-  <!-- 影片區 -->
   <div id="video-section">
     <h1>請觀看以下影片</h1>
     <p>影片播放完畢後，將會出現「前往問卷」按鈕。</p>
@@ -86,21 +68,19 @@
     <button id="nextButton" onclick="goToSurvey()">前往問卷</button>
   </div>
 
-  <div id="debug-info"></div>
-
   <script>
     const youtubeVideos = [
-      "XnFSPbYLKD0",
-      "kAXq2IrlvBc",
-      "kRHUgpc9JNI",
-      "5nAKjG8FR2M"
+      "XnFSPbYLKD0", // 情境一
+      "kAXq2IrlvBc", // 情境二
+      "kRHUgpc9JNI", // 情境三
+      "5nAKjG8FR2M"  // 情境四
     ];
 
     const videoMapping = {
-      "XnFSPbYLKD0": "影片 A",
-      "kAXq2IrlvBc": "影片 B",
-      "kRHUgpc9JNI": "影片 C",
-      "5nAKjG8FR2M": "影片 D"
+      "XnFSPbYLKD0": "情境一",
+      "kAXq2IrlvBc": "情境二",
+      "kRHUgpc9JNI": "情境三",
+      "5nAKjG8FR2M": "情境四"
     };
 
     const baseSurveyLink = "https://www.surveycake.com/s/QMg9R";
@@ -133,9 +113,6 @@
           }
         });
       };
-
-      // 顯示影片資訊供你確認（可刪除）
-      document.getElementById('debug-info').innerText = `已隨機播放：${videoMapping[currentVideoId]}`;
     }
 
     function onPlayerStateChange(event) {
@@ -152,4 +129,3 @@
   </script>
 </body>
 </html>
-
