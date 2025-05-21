@@ -43,9 +43,6 @@
     #video-section {
       display: none;
     }
-    #nextButton {
-      display: none;
-    }
     #situation-label {
       font-weight: bold;
       margin-top: 1rem;
@@ -59,8 +56,8 @@
   <div id="intro-section">
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
-    <p>感謝您願意參與本研究。您將會觀看一段模擬影片，影片播放約為 1～2 分鐘。請務必專心觀看，並於影片結束後點選「前往問卷」進行填答。</p>
-    <p>請注意：**請根據畫面顯示的「情境名稱」於問卷中自行選擇您所觀看的影片**。</p>
+    <p>感謝您願意參與本研究。您將會隨機觀看一段1~2分鐘的模擬影片，請務必完整觀看。</p>
+    <p>影片播放完畢後，系統將自動導向對應問卷，無需您自行選擇。</p>
     <p>本研究資料僅供學術用途，您的回答將完全匿名且保密。</p>
     <p>非常感謝您的時間與協助，祝您平安順心！</p>
     <button onclick="goToVideo()">下一頁</button>
@@ -68,33 +65,40 @@
 
   <div id="video-section">
     <h1>請觀看以下影片</h1>
-    <p>影片播放完畢後，將會出現「前往問卷」按鈕。</p>
+    <p>影片播放完畢後，系統將自動導向問卷</p>
     <div id="situation-label"></div>
     <div id="video-container">
       <div id="player"></div>
     </div>
-    <button id="nextButton" onclick="goToSurvey()">前往問卷</button>
   </div>
 
   <script>
-    const youtubeVideos = [
-      "XnFSPbYLKD0", // 情境一
-      "kAXq2IrlvBc", // 情境二
-      "kRHUgpc9JNI", // 情境三
-      "5nAKjG8FR2M"  // 情境四
+    const videoInfo = [
+      {
+        id: "XnFSPbYLKD0",
+        label: "情境一",
+        survey: "https://www.surveycake.com/s/0ZBe0"
+      },
+      {
+        id: "kAXq2IrlvBc",
+        label: "情境二",
+        survey: "https://www.surveycake.com/s/wwD66"
+      },
+      {
+        id: "kRHUgpc9JNI",
+        label: "情境三",
+        survey: "https://www.surveycake.com/s/802xG"
+      },
+      {
+        id: "5nAKjG8FR2M",
+        label: "情境四",
+        survey: "https://www.surveycake.com/s/QMg9R"
+      }
     ];
 
-    const videoMapping = {
-      "XnFSPbYLKD0": "情境一",
-      "kAXq2IrlvBc": "情境二",
-      "kRHUgpc9JNI": "情境三",
-      "5nAKjG8FR2M": "情境四"
-    };
-
-    const baseSurveyLink = "https://www.surveycake.com/s/QMg9R";
-
-    let currentVideoId = "";
+    let selectedVideo = null;
     let player;
+    let playbackChecker;
 
     function goToVideo() {
       document.getElementById('intro-section').style.display = 'none';
@@ -103,12 +107,10 @@
     }
 
     function embedRandomVideo() {
-      const randomIndex = Math.floor(Math.random() * youtubeVideos.length);
-      currentVideoId = youtubeVideos[randomIndex];
-      const situation = videoMapping[currentVideoId];
+      const randomIndex = Math.floor(Math.random() * videoInfo.length);
+      selectedVideo = videoInfo[randomIndex];
 
-      // 顯示情境名稱
-      document.getElementById('situation-label').innerText = `您目前觀看的情境為：${situation}`;
+      document.getElementById('situation-label').innerText = `您目前觀看的情境為：${selectedVideo.label}`;
 
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -119,24 +121,50 @@
         player = new YT.Player('player', {
           height: '315',
           width: '560',
-          videoId: currentVideoId,
+          videoId: selectedVideo.id,
+          playerVars: {
+            controls: 0,       // 隱藏控制列
+            disablekb: 1,      // 禁止鍵盤操作
+            modestbranding: 1,
+            rel: 0
+          },
           events: {
+            'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
           }
         });
       };
     }
 
+    function onPlayerReady(event) {
+      event.target.playVideo();
+
+      // 每秒檢查播放進度
+      playbackChecker = setInterval(() => {
+        const duration = player.getDuration();
+        const currentTime = player.getCurrentTime();
+
+        // 若播放時間接近結尾（少於1秒），允許跳轉
+        if (duration - currentTime < 1) {
+          clearInterval(playbackChecker);
+          goToSurvey();
+        }
+      }, 1000);
+    }
+
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.ENDED) {
-        document.getElementById('nextButton').style.display = 'inline-block';
+        clearInterval(playbackChecker);
+        goToSurvey();
       }
     }
 
     function goToSurvey() {
-      const situation = encodeURIComponent(videoMapping[currentVideoId] || currentVideoId);
-      const surveyURL = `${baseSurveyLink}?video=${situation}`;
-      window.location.href = surveyURL;
+      if (selectedVideo && selectedVideo.survey) {
+        window.location.href = selectedVideo.survey;
+      } else {
+        alert("錯誤：找不到對應問卷。");
+      }
     }
   </script>
 </body>
