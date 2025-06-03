@@ -56,7 +56,7 @@
   <div id="intro-section">
     <h1>問卷提醒與感謝</h1>
     <p>親愛的參與者您好：</p>
-    <p>感謝您願意參與本研究。您將會隨機觀看一段1~2分鐘的模擬影片，請務必完整觀看。</p>
+    <p>感謝您願意參與本研究。您將會隨機觀看一段對話影片，請務必完整觀看。</p>
     <p>影片播放完畢後，系統將自動導向對應問卷，無需您自行選擇。</p>
     <p>本研究資料僅供學術用途，您的回答將完全匿名且保密。</p>
     <p>非常感謝您的時間與協助，祝您平安順心！</p>
@@ -75,24 +75,24 @@
   <script>
     const videoInfo = [
       {
-        id: "XnFSPbYLKD0",
+        id: "zMJ_ouIe63k",  // 情境一 Shorts ID
         label: "情境一",
-        survey: "https://www.surveycake.com/s/0ZBe0"
+        survey: "https://www.surveycake.com/s/9rnZd"
       },
       {
-        id: "kAXq2IrlvBc",
+        id: "nw5NuAoBXNU",  // 情境二
         label: "情境二",
-        survey: "https://www.surveycake.com/s/wwD66"
+        survey: "https://www.surveycake.com/s/KXw3N"
       },
       {
-        id: "kRHUgpc9JNI",
+        id: "dEp_QDkmFtg",  // 情境三
         label: "情境三",
-        survey: "https://www.surveycake.com/s/802xG"
+        survey: "https://www.surveycake.com/s/OzRMa"
       },
       {
-        id: "5nAKjG8FR2M",
+        id: "3zVorKg1tgk",  // 情境四
         label: "情境四",
-        survey: "https://www.surveycake.com/s/QMg9R"
+        survey: "https://www.surveycake.com/s/7woV3"
       }
     ];
 
@@ -123,8 +123,8 @@
           width: '560',
           videoId: selectedVideo.id,
           playerVars: {
-            controls: 0,       // 隱藏控制列
-            disablekb: 1,      // 禁止鍵盤操作
+            controls: 0,
+            disablekb: 1,
             modestbranding: 1,
             rel: 0
           },
@@ -138,13 +138,9 @@
 
     function onPlayerReady(event) {
       event.target.playVideo();
-
-      // 每秒檢查播放進度
       playbackChecker = setInterval(() => {
         const duration = player.getDuration();
         const currentTime = player.getCurrentTime();
-
-        // 若播放時間接近結尾（少於1秒），允許跳轉
         if (duration - currentTime < 1) {
           clearInterval(playbackChecker);
           goToSurvey();
